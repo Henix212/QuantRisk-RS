@@ -1,0 +1,45 @@
+# Personal planning (local only)
+ROADMAP.md
+
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+
+# Python / uv / maturin
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+uv.toml
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+*.so
+*.dylib
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Misc local
+*.log
+tmp/
+.cache/

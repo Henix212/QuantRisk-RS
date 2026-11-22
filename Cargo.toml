@@ -1,0 +1,23 @@
+[package]
+name = "quantrisk-rs"
+version = "0.1.0"
+edition = "2021"
+description = "High-performance risk, research & execution engine for quant trading"
+license = "MIT"
+
+[lib]
+name = "quantrisk_rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+nalgebra = "0.35"
+pyo3 = { version = "0.30", features = ["extension-module"] }
+rand = "0.10.4"
+rand_distr = "0.6.0"
+rayon = "1.12"
+
+[profile.release]
+lto = "thin"          # good build-time / perf tradeoff — switch to true when done iterating
+codegen-units = 1     # slower compiles, often faster binaries
+opt-level = 3
+panic = "abort"       # fine for a numerics lib (no heavy unwind)
