@@ -9,7 +9,7 @@ use crate::types::*;
 /// Ensure portfolio weights and the covariance matrix share the same dimension `n`
 /// (`w` length `n`, `cov` shape `n×n`).
 pub fn check_weights_cov(w: &VecF, cov: &MatF) -> Result<()> {
-    let n = w.len();
+    let n: usize = w.len();
 
     if cov.ncols() != n || cov.nrows() != n {
         return Err(QuantRiskError::DimensionMismatch {
