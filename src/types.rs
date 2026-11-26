@@ -37,5 +37,11 @@ impl fmt::Display for QuantRiskError {
 
 impl std::error::Error for QuantRiskError {}
 
+impl From<QuantRiskError> for pyo3::PyErr {
+    fn from(err: QuantRiskError) -> pyo3::PyErr {
+        pyo3::exceptions::PyValueError::new_err(err.to_string())
+    }
+}
+
 /// Convenience alias for fallible crate operations.
 pub type Result<T> = std::result::Result<T, QuantRiskError>;
