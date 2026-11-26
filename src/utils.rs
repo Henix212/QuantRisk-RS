@@ -46,17 +46,18 @@ pub fn check_len(v: &VecF, n: usize, name: &str) -> Result<()> {
 /// via a successful Cholesky factorization.
 pub fn ensure_spd(cov: &MatF) -> Result<()> {
     let cov_t = cov.transpose();
-    cov.relative_eq(&cov_t, DEFAULT_TOLERANCE, DEFAULT_TOLERANCE)
-        .ok_or(QuantRiskError::NotSpd)?;
+    if !cov.relative_eq(&cov_t, DEFAULT_TOLERANCE, DEFAULT_TOLERANCE) {
+        return Err(QuantRiskError::NotSpd);
+    }
     cov.clone().cholesky().ok_or(QuantRiskError::NotSpd)?;
     Ok(())
 }
 
-/// Ensure a confidence level lies in the closed unit interval `[0, 1]`.
+/// Ensure a confidence level lies in the open unit interval `(0, 1)`.
 pub fn check_confidence_level(confidence_level: f64) -> Result<()> {
-    if !(0.0..=1.0).contains(&confidence_level) {
+    if !(0.0 < confidence_level && confidence_level < 1.0) {
         return Err(QuantRiskError::InvalidArgument(format!(
-            "Confidence level must be in [0,1], got {confidence_level}"
+            "Confidence level must be in (0,1), got {confidence_level}"
         )));
     }
     Ok(())
@@ -87,12 +88,11 @@ pub fn annualize_mean(daily_mean_return: f64) -> Result<f64> {
 
 /// Scale a daily volatility to an annual figure using [`TRADING_DAYS`].
 pub fn annualize_vol(vol: f64) -> Result<f64> {
-    Ok(vol * TRADING_DAYS.isqrt() as f64)
+    Ok(vol * (TRADING_DAYS as f64).sqrt())
 }
 
-/// Portfolio volatility \(\sigma_p = \sqrt{w^\top \Sigma w}\).
-pub fn portfolio_vol(w: &VecF, cov: &MatF) -> Result<f64> {
-    check_weights_cov(w, cov)?;
-    let variance = w.dot(&(cov * w)); // wᵀ (Σ w)
-    Ok(variance.sqrt())
+/// Scale a daily covariance matrix to an annual figure: `Σ_ann = Σ_daily × trading_days`.
+pub fn annualize_cov(cov_daily: &MatF) -> Result<MatF> {
+    check_square(cov_daily)?;
+    Ok(cov_daily * (TRADING_DAYS as f64))
 }
