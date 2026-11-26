@@ -11,6 +11,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 nalgebra = "0.35"
+numpy = { version = "0.30", features = ["nalgebra"] }
 pyo3 = { version = "0.30", features = ["extension-module"] }
 rand = "0.10.4"
 rand_distr = "0.6.0"
