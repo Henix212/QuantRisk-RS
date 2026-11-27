@@ -71,6 +71,16 @@ pub fn check_non_empty_vec(w: &VecF) -> Result<()> {
     Ok(())
 }
 
+/// Reject a matrix with zero rows or zero columns (`name` appears in the error).
+pub fn check_non_empty_mat(m: &MatF, name: &str) -> Result<()> {
+    if m.nrows() == 0 || m.ncols() == 0 {
+        return Err(QuantRiskError::InvalidArgument(format!(
+            "{name} matrix must be non-empty"
+        )));
+    }
+    Ok(())
+}
+
 /// Ensure a count-like argument (e.g. simulation paths) is strictly positive.
 pub fn check_positive_usize(n: u64) -> Result<()> {
     if n == 0 {

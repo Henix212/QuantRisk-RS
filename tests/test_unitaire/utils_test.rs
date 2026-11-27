@@ -4,7 +4,8 @@ use quantrisk_rs::constant::TRADING_DAYS;
 use quantrisk_rs::types::{MatF, QuantRiskError, VecF};
 use quantrisk_rs::utils::{
     annualize_cov, annualize_mean, annualize_vol, check_confidence_level, check_len,
-    check_non_empty_vec, check_positive_usize, check_square, check_weights_cov, ensure_spd,
+    check_non_empty_mat, check_non_empty_vec, check_positive_usize, check_square,
+    check_weights_cov, ensure_spd,
 };
 
 #[test]
@@ -100,6 +101,30 @@ fn check_non_empty_vec_mismatch() {
     let w = VecF::zeros(0);
     assert!(matches!(
         check_non_empty_vec(&w),
+        Err(QuantRiskError::InvalidArgument(_))
+    ));
+}
+
+#[test]
+fn check_non_empty_mat_ok() {
+    let m = MatF::zeros(2, 3);
+    assert!(matches!(check_non_empty_mat(&m, "returns"), Ok(())));
+}
+
+#[test]
+fn check_non_empty_mat_zero_rows() {
+    let m = MatF::zeros(0, 3);
+    assert!(matches!(
+        check_non_empty_mat(&m, "returns"),
+        Err(QuantRiskError::InvalidArgument(_))
+    ));
+}
+
+#[test]
+fn check_non_empty_mat_zero_cols() {
+    let m = MatF::zeros(3, 0);
+    assert!(matches!(
+        check_non_empty_mat(&m, "returns"),
         Err(QuantRiskError::InvalidArgument(_))
     ));
 }
